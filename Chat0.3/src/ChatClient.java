@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ChatClient extends Frame{
     //partial is inconvenient
@@ -20,7 +22,7 @@ public class ChatClient extends Frame{
         setLocation(400, 300);
         this.setSize(300, 300);
 
-        //borderlayout
+        //border layout
         add(tfText, BorderLayout.SOUTH);
         add(taContent, BorderLayout.NORTH);
 
@@ -28,6 +30,13 @@ public class ChatClient extends Frame{
         pack();
 
         setVisible(true);
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent args0){
+                System.exit(0);
+            }
+        });
     }
 
 
