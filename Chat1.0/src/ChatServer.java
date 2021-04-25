@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.*;
+import java.sql.Struct;
 
 public class ChatServer {
     boolean started = false;
@@ -17,6 +18,7 @@ public class ChatServer {
     public void start(){
         try {
             ss = new ServerSocket(8888);
+            started = true; //socket connected, start listening
         }catch (BindException e) {
             System.out.println("Port in use...");
             System.out.println("====Please turn off unnecessary programs====");
@@ -68,32 +70,34 @@ System.out.println("a client connected.");//debug line
             this.s = s;
             try {
                 dis = new DataInputStream(s.getInputStream());
+                bConnect = true;//is connected
             } catch (IOException e){
                 //Anto generated Exception
                 e.printStackTrace();
             }
         }
-        @Override
         public void run() {
 //            dis = new DataInputStream(s.getInputStream());
-            while (bConnect){
-                try {//receive and print
+            try {
+                while (bConnect){
+                //receive and print
                     String str=dis.readUTF();//TODO try catch
                     System.out.println(str);
-                } catch (EOFException e) { // client close handling from end of main
+                }
+            } catch (EOFException e) { // client close handling from end of main
                     System.out.println("client disconnected");
-                    e.printStackTrace();
-                } catch (IOException e) {
+                    bConnect = false; // since disconnected, set connect to false
+                    //e.printStackTrace();
+            } catch (IOException e) {
                     e.printStackTrace();
             } finally {
                     try{
                         if (dis!=null) dis.close();
                         if (s != null) s.close();
-                    }catch (IOException e1){
+                    } catch (IOException e1){
                         e1.printStackTrace();
                     }
                 }
             }
         }
     }
-}
